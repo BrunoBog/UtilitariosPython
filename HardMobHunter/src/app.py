@@ -4,9 +4,11 @@ import requests
 import time
 from bs4 import BeautifulSoup
 from flask import Flask
-from src.Busca import hunting
+from Busca import hunting
+
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def main():
