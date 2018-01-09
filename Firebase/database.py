@@ -5,11 +5,11 @@ class firebase(object):
     user = None
 
     config = {
-        "apiKey": "",
-        "authDomain": "",
-        "databaseURL": "",
-        "storageBucket": "",
-        "serviceAccount": ""
+        "apiKey": "AIzaSyB7_2SlMHnnXx96vDcVjY9CFMdsLUEnv3I",
+        "authDomain": "financaspessoais-45f54.firebaseapp.com",
+        "databaseURL": "https://financaspessoais-45f54.firebaseio.com",
+        "storageBucket": "financaspessoais-45f54.appspot.com",
+        "serviceAccount": "C:\\Users\\BOG\\OneDrive\\Documentos\\Financas-b85e1f6526a1.json"
     }
     def __init__(self):
         self.firebase = pyrebase.initialize_app(self.config)

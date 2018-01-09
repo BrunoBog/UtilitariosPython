@@ -2,11 +2,11 @@ from pyrebase import pyrebase
 from modules.selic import Selic
 
 # config = {
-#         "apiKey": "",
-#         "authDomain": "",
-#         "databaseURL": "",
-#         "storageBucket": "",
-#         "serviceAccount": ""
+#         "apiKey": "AIzaSyB7_2SlMHnnXx96vDcVjY9CFMdsLUEnv3I",
+#         "authDomain": "financaspessoais-45f54.firebaseapp.com",
+#         "databaseURL": "https://financaspessoais-45f54.firebaseio.com",
+#         "storageBucket": "financaspessoais-45f54.appspot.com",
+#         "serviceAccount": "caminho para o arquivo.json"
 #     }
 # firebase = pyrebase.initialize_app(config)
 # auth = firebase.auth()

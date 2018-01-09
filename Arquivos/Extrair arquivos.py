@@ -17,4 +17,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         main(sys.argv[1])
     else:
-        main("C:\\Users\\balves\\Desktop\\python\\dados.zip")        
+        main('C:\\Users\\Bruno\OneDrive\\Documentos\\Desenvolvimento\\phyton\\Exemplos')
