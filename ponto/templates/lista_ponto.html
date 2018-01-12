@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Usuario</th>
+          <th scope="col">dia</th>
+          <th scope="col">Restante</th>
+           {% if ponto.h_trabalhadas is not none %}
+                <th scope="col">Total</th>
+            {% else %}
+                <th>Previsao de saida</th>
+            {% endif %}
+          <th scope="col">Batida1</th>
+          <th scope="col">Batida2</th>
+          <th scope="col">Batida3</th>
+          <th scope="col">Batida4</th>
+          <th scope="col">Batida5</th>
+          <th scope="col">Batida6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if ponto is not none %}
+            <tr>
+                <td>{{ponto.funcionario}}</td>
+                <td>{{ponto.dia.date()}}</td>
+                {% if restante is not none %}
+                    <td>{{restante}}</td>
+                {% else %}
+                    <td> Você trabalhou 8 horas</td>
+                {% endif %}
+
+                {% if ponto.h_trabalhadas is not none %}
+                    <td>{{ponto.h_trabalhadas.time()}}</td>
+                {% else %}
+                {% if ponto.previsao_saida is not none %}
+                    <td>{{ponto.previsao_saida.time()}}</td>
+                {% else %}
+                    <td>Ainda não vou calcular</td>
+                {% endif %}
+                {% endif %}
+
+                {% for n in ponto.batidas %}
+                    <td>{{n.time()}}</td>
+                {% endfor %}
+        </tr>
+
+      {% endif %}
+      </tbody>
+    </table>
+
+</div>
+{% endblock %}
