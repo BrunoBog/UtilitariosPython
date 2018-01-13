@@ -9,7 +9,6 @@ def notifica():
     ponto = buscar_ponto()
     notifica_almoco = datetime.now()
     notifica_saida = datetime.now()
-    ponto.calcula_tempo_restante()
     ponto.hora_restante()
 
     while True:
@@ -26,10 +25,10 @@ def notifica():
 
         if notifica_saida < (notifica_saida + timedelta(hours=1)):
             notifica_saida = datetime.now()
-            if ponto.previsao_saida > 0:
+            if ponto.previsao_saida is not None:
                 toaster.show_toast("oi!!!", "Sua previsão de saida: " + str(ponto.previsao_saida.time()), duration=10)
 
-        if ponto.h_trabalhadas.hour >= 8:
+        if (ponto.h_trabalhadas - timedelta(hours=8)) > timedelta(minutes=1):
             toaster.show_toast("Vá!!!", "Você já completou 8 Horas ", duration=10)
 
 

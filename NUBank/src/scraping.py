@@ -8,22 +8,22 @@ from flask import Flask, render_template
 app = Flask(__name__)
 config = configparser.ConfigParser()
 config.read_file(open('config.ini'))
-nu = Nubank(config['DEFAULT']['usuario'], config['DEFAULT']['senha'])
+nu = Nubank(config['DEFAULT']['usuario'], config['DEFAULT']['senha']) # subistituir por usu e senha
 dia_fechamento = int(config['DEFAULT']['dia_do_fechamento'])
 
+
 def add_desp(n):
-    desp = Despesa(
+    return Despesa(
         descricao=n['description'],
         categoria=n['category'],
         valor=n['amount'],
         data=datetime.strptime(n['time'], "%Y-%m-%dT%H:%M:%SZ"),
         titulo=n['title'],
-        detalhes=n['details'],
+        detalhes=n['details'], #json.dumps(n['details'])
         id=n['id'],
         _links=n['_links'],
         link=n['href'],
     )
-    return desp
 
 
 def grava_saida(resultado, arquivoSaida):
@@ -32,19 +32,17 @@ def grava_saida(resultado, arquivoSaida):
     arquivo.close()
 
 
-@app.route("/listarCompras")
-def busca_valores():
+def busca_valores_atuais():
     # Lista de dicionários contendo todos os eventos do  Nubank (Compras, aumento de limite, pagamentos,etc)
     transactions = nu.get_account_statements()
-    despesa = {}
     despesas = {}
-    i =0
+    i = 0
     for n in transactions:
         data_despesa = datetime.strptime(n['time'], "%Y-%m-%dT%H:%M:%SZ")
-        hoje = datetime.now()
+        hoje = datetime.now() #if hoje is None else hoje
 
         # Após o fechamento do mês anterior
-        if data_despesa.year == hoje.year and  data_despesa.month == hoje.month-1 and data_despesa.day > dia_fechamento:
+        if data_despesa.year == hoje.year and data_despesa.month == hoje.month - 1 and data_despesa.day > dia_fechamento:
             despesas.update({i: add_desp(n).json()})
 
         # Despesas do mês corrente
@@ -52,17 +50,43 @@ def busca_valores():
             despesas.update({i: add_desp(n).json()})
 
         # no caso do mês de dezembro...
-        if data_despesa.year == hoje.year-1 and data_despesa.month == 12 and data_despesa.day > dia_fechamento:
+        if data_despesa.year == hoje.year - 1 and data_despesa.month == 12 and data_despesa.day > dia_fechamento:
             despesas.update({i: add_desp(n).json()})
 
-        i = i+1
+        i = i + 1
+    return despesas
 
-    return json.dumps(despesas)
 
+def categoriza_valores(despesas):
+    if despesas is None:
+        return
+    categorias = dict()
+    for key, val in despesas.items():
+        if len(val['detalhes']) > 1:
+            if 'tags' in json.loads(val['detalhes']).keys():
+                for n in json.loads(val['detalhes'])['tags']:
+                    
+                    #json.loads(val['detalhes'])['tags']
+                    print(n)
+    pass
+
+@app.route("/listarComprasAtuais")
+def lista_valores_atuais():
+    return json.dumps(busca_valores_atuais())
+
+
+@app.route("/busca<mes><ano><diafechamento>")
+def busca_compras():
+    pass
+
+@app.route('/listarCategorizado')
+def lista_valores_categorizados():
+    despesas = busca_valores_atuais()
+    return json.dumps(categoriza_valores(despesas=despesas))
 
 @app.route("/teste")
 def teste():
-    lista = busca_valores()
+    lista = busca_valores_atuais()
     # testando saida em jSon
     grava_saida(json.dumps(lista), 'C:\\Users\\BOG\Desktop\\saida.json')
 

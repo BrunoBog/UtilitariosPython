@@ -11,7 +11,6 @@ lista.append("615217")
 
 def main():
     toaster = ToastNotifier()
-
     # hunt(615217)
     while(True):
         for n in lista:

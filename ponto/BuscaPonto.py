@@ -43,6 +43,9 @@ def buscar_ponto(login=None, password=None):
 
 def preenche_ponto(element):
     # Extraindo o dia
+    if element is None:
+        return
+
     dia = element[0].text.split("/")
     ano=dia[2].strip().split(" ")
     data = datetime.strptime(dia[0].strip() + "/"+dia[1].strip() + "/"+ano[0], '%d/%m/%Y')
@@ -67,7 +70,6 @@ def preenche_ponto(element):
                     ponto.h_trabalhadas = batida
             else:
                 continue
-
     ponto.batidas = lista
 
     if ponto.h_trabalhadas is None:
@@ -88,9 +90,9 @@ def exibe_ponto():
     password = request.form.get('password')
 
     ponto = buscar_ponto(login=login, password=password)
-    ponto.calcula_tempo_restante()
+    ponto.hora_restante()
     return render_template("lista_ponto.html", ponto=ponto, restante=ponto.restante)
 
 
 if __name__ == '__main__':
-    app.run(port=4992, debug=True)
+    app.run(port=4992, debug=True, host='0.0.0.0')
