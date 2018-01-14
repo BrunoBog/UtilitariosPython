@@ -65,10 +65,17 @@ def categoriza_valores(despesas):
         if len(val['detalhes']) > 1:
             if 'tags' in json.loads(val['detalhes']).keys():
                 for n in json.loads(val['detalhes'])['tags']:
-                    
+                    if n not in categorias.keys():
+                        categorias.update({n: val['valor'] })
+                    else:
+                        categorias.update({n: val['valor'] + categorias[n]})
+                    if n == r'r\u00e9veillon':
+                        print(val['valor'])
+
                     #json.loads(val['detalhes'])['tags']
-                    print(n)
-    pass
+                    # print(n)
+                    # print(categorias)
+    return categorias
 
 @app.route("/listarComprasAtuais")
 def lista_valores_atuais():
