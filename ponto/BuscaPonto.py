@@ -6,10 +6,11 @@ from flask import request
 from flask.app import Flask
 from flask.templating import render_template
 
+from ponto.common.mongo import Database
 from ponto.model.ponto import Ponto
 
 config = configparser.ConfigParser()
-config.read_file(open('config.ini'))
+config.read_file(open( 'config.ini' ))
 
 app = Flask(__name__)
 app.secret_key = 'superSecretA'
@@ -34,18 +35,19 @@ def buscar_ponto(login=None, password=None):
     s.post('https://portal.seniorsolution.com.br/portal/index.php', data=auth)
 
     response = s.get('https://portal.seniorsolution.com.br/portal/portal.php/rh/ponto/browse')
-    content = response.content
-    soup = BeautifulSoup(content, "html.parser")
+    soup = BeautifulSoup(response.content, "html.parser")
     element = soup.find_all("td", {"nowrap": "nowrap"})
+
+    if element is None or len(element) <=0:
+        return
+
     ponto = preenche_ponto(element=element)
+
     return ponto
 
 
 def preenche_ponto(element):
     # Extraindo o dia
-    if element is None:
-        return
-
     dia = element[0].text.split("/")
     ano=dia[2].strip().split(" ")
     data = datetime.strptime(dia[0].strip() + "/"+dia[1].strip() + "/"+ano[0], '%d/%m/%Y')
@@ -77,6 +79,9 @@ def preenche_ponto(element):
 
     return ponto
 
+@app.before_first_request
+def initialize_database():
+    Database.initialize()
 
 @app.route('/')
 @app.route('/login')
@@ -88,10 +93,12 @@ def login_template():
 def exibe_ponto():
     login = request.form.get('login')
     password = request.form.get('password')
-
     ponto = buscar_ponto(login=login, password=password)
-    ponto.hora_restante()
-    return render_template("lista_ponto.html", ponto=ponto, restante=ponto.restante)
+    if ponto is not None:
+        ponto.hora_restante()
+        return render_template("lista_ponto.html", ponto=ponto, restante=ponto.restante)
+
+    return "<h1>Não foi possível buscar seu ponto</h1>"
 
 
 if __name__ == '__main__':

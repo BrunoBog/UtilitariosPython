@@ -26,8 +26,8 @@ def add_desp(n):
     )
 
 
-def grava_saida(resultado, arquivoSaida):
-    arquivo = open(arquivoSaida, "w")
+def grava_saida(resultado, arquivosaida):
+    arquivo = open(arquivosaida, "w")
     arquivo.writelines(resultado)
     arquivo.close()
 
@@ -39,7 +39,8 @@ def busca_valores_atuais():
     i = 0
     for n in transactions:
         data_despesa = datetime.strptime(n['time'], "%Y-%m-%dT%H:%M:%SZ")
-        hoje = datetime.now() #if hoje is None else hoje
+        # if hoje is None else hoje
+        hoje = datetime.now()
 
         # Após o fechamento do mês anterior
         if data_despesa.year == hoje.year and data_despesa.month == hoje.month - 1 and data_despesa.day > dia_fechamento:
@@ -66,15 +67,12 @@ def categoriza_valores(despesas):
             if 'tags' in json.loads(val['detalhes']).keys():
                 for n in json.loads(val['detalhes'])['tags']:
                     if n not in categorias.keys():
-                        categorias.update({n: val['valor'] })
+                        categorias.update({n: val['valor']})
                     else:
                         categorias.update({n: val['valor'] + categorias[n]})
                     if n == r'r\u00e9veillon':
                         print(val['valor'])
 
-                    #json.loads(val['detalhes'])['tags']
-                    # print(n)
-                    # print(categorias)
     return categorias
 
 @app.route("/listarComprasAtuais")

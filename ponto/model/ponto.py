@@ -2,8 +2,12 @@ from datetime import datetime
 
 from pandas._libs.lib import timedelta
 
+from ponto.common.mongo import Database
+
 
 class Ponto(object):
+    collection = 'ponto'
+
     def __init__(self, dia, funcionario=None, batidas=None,
                  h_trabalhadas=None, previsao_saida=None, restante=None):
         self.dia = dia
@@ -62,9 +66,14 @@ class Ponto(object):
 
     def hora_restante(self):
         if self.h_trabalhadas is not None:
-            if (self.hora_total - self.h_trabalhadas).hour > 8:
-                self.restante = 0
+            if len(self.batidas) != 2:
+                if (self.hora_total - self.h_trabalhadas).hour > 8:  #comentei um
+                    self.restante = 0
+                    return self.restante
+            else:
+                self.restante = self.hora_total - self.h_trabalhadas
                 return self.restante
+
         else:
             self.calcula_restante()
 
@@ -89,3 +98,20 @@ class Ponto(object):
             batida1 = self.batidas[1] - self.batidas[0]
             batida2 = (self.batidas[3] - self.batidas[2]) + batida1
             return self.hora_total - batida2
+
+    def insere_batida(self):
+        pass
+
+    def busca_ponto(self):
+        Database.find_one(collection=self.collection, query='dia=self.dia')
+
+    def json(self):
+        return {
+            "dia": self.dia,
+            "funcionario": self.funcionario,
+            "batidas": self.batidas,
+            "h_trabalhadas": self.h_trabalhadas,
+            "previsao_saida": self.previsao_saida,
+            "restante": self.restante,
+            "hora_total": self.hora_total
+        }
