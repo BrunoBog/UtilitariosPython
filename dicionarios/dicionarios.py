@@ -1,3 +1,5 @@
+import operator
+
 d1 = {}
 d2 = dict()
 
@@ -29,3 +31,11 @@ print(d1)
 d4 = {**d1, **d2}
 print("Resultado do d4")
 print(d4)
+
+#ordenando pelo valor
+
+print('Resultado da ordenação')
+xs = {'a': 5, 'b': 1, 'c': 3, 'd': 2}
+print(sorted(xs.items(), key=lambda x: x[1]))
+#ou
+print(sorted(xs.items(), key=operator.itemgetter(1)))

@@ -37,8 +37,8 @@ def lista_conteudo(diretorio):
     todos_arquivos = os.listdir(diretorio)
 
 
-caminho_do_arquivo = "C:\\Users\\bog\\Desktop\\"
-nome_arquivo = "gastos.txt"
+caminho_do_arquivo = r"C:\Users\bruno.alves\OneDrive\Workspace\Phyton\UtilitariosPython\NUBank\src"
+nome_arquivo = "\gastos.txt"
 data = ler_arquivo(caminho_do_arquivo+nome_arquivo)
 
 if data is None:
@@ -50,7 +50,7 @@ linha = ""
 for x in data:
     linha += " " + x[:len(x) - 1] + "\t"
     cont += 1
-    if cont == 2:
+    if cont == 3:
         resultado.append(linha)
         cont =0
         linha = ""
